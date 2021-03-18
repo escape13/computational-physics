@@ -1,22 +1,15 @@
-from vpython import *
 import random
 import time
+import matplotlib.pyplot as plt
 
 N = int(input('Number of steps: '))
 prob = float(input('Probability of an H residue: '))
 
-final_start = time.time()
-
 num_bonds = []
 times = [] 
 
-final_cons = []
-final_h = []
-final_p = []
-final_e = []
-
 for sims in range(5000, 100000, 5000):
-    
+    start = time.time()
 
     best_h = []
     best_p = []
@@ -79,45 +72,23 @@ for sims in range(5000, 100000, 5000):
             best_e = e
             best_cons = connections
 
-    
-    if len(best_e) >= len(final_e):
-        final_e = best_e
-        final_cons = best_cons
-        final_h = best_h
-        final_p = best_p
- 
-final_end = time.time()
-
-print('Time elapsed: ', final_end - final_start, ' s')
-print('H-H connections: ', len(final_e))
-
-window = graph(width=700, height=700, fast=False, title='Protein conformation with lowest potential energy')
-
-route = gcurve(color=color.black, width=4)
-h_dots = gdots(color=color.blue, radius=7)
-p_dots = gdots(color=color.red, radius=7)
-energy = gdots(color=color.green, radius=5)
-
-if [0, 0] in final_h:
-    h_dots.plot([0, 0])
-else:
-    p_dots.plot([0, 0])
-
-route.plot([0, 0])
+    end = time.time()
+    times.append(end - start)
+    num_bonds.append(len(best_e))
 
 
-for con in final_cons:
-    if con is not final_cons[-1]:
-        route.plot(con[-1])
-        if con[-1] in final_h:
-            h_dots.plot(con[-1])
-        elif con is not final_cons[-1]:
-            p_dots.plot(con[-1])
+plt.figure()
+plt.title('Calculation time vs Number of iterations')
+plt.xlabel('Iterations')
+plt.ylabel('Calculation time')
+plt.plot(range(5000, 100000, 5000), times)
+plt.savefig(f'/Users/timurvaleev/Desktop/dump/time{N}.png')
 
-    rate(8)
-    
+plt.figure()
+plt.title('No. of H-H bonds vs Number of iterations')
+plt.xlabel('Iterations')
+plt.ylabel('H-H bonds')
+plt.plot(range(5000, 100000, 5000), num_bonds)
+plt.savefig(f'/Users/timurvaleev/Desktop/dump/bonds{N}.png')
 
-
-for en in final_e:
-    energy.plot(en)
-
+plt.show()
