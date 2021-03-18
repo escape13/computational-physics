@@ -89,15 +89,19 @@ else:
 
 route.plot([0, 0])
 
+
 for con in best_cons:
-    route.plot(con[1])
-    if con[1] in best_h:
-        h_dots.plot(con[1])
-    else:
-        p_dots.plot(con[1])
+    if con is not best_cons[-1]:
+        route.plot(con[-1])
+        if con[-1] in best_h:
+            h_dots.plot(con[-1])
+        elif con is not best_cons[-1]:
+            p_dots.plot(con[-1])
 
     rate(4)
     
+
+
 for en in best_e:
     energy.plot(en)
 
